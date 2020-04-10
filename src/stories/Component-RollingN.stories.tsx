@@ -2,8 +2,8 @@ import React from "react";
 import RollingNumber from "../playlists/RollingNumber";
 
 export default {
-  title: "RollingNumber",
+  title: "Component/RollingNumber",
   component: RollingNumber
 };
 
-export const normal = () => <RollingNumber size={"19px"} />;
+export const basic = () => <RollingNumber size={"29px"} />;
