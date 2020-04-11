@@ -4,6 +4,7 @@ import RollingNumber from "../playlists/RollingNumber";
 import RollingPrice from "../playlists/RollingPrice";
 import { css } from "emotion";
 import ExampleRollingPrice from "../playlists/ExampleRollingPrice";
+import ExamplePagination from "../playlists/ExamplePagination";
 
 export default {
   title: "Component/RollingNumber",
@@ -14,3 +15,4 @@ export const basic = () => <RollingNumber size="29px" letter="7" />;
 
 // export const pagenation = () => <Pagination />;
 export const rollingPrice = () => <ExampleRollingPrice />;
+export const pagination = () => <ExamplePagination />;
