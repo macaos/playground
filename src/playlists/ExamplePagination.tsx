@@ -4,7 +4,7 @@ import Pagination from "./Pagination";
 const ExamplePagination = () => {
   return (
     <>
-      <Pagination />
+      <Pagination currentPage={9} totalPages={24} />
     </>
   );
 };
