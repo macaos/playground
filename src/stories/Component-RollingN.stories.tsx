@@ -12,7 +12,5 @@ export default {
 };
 
 export const basic = () => <RollingNumber size="29px" letter="7" />;
-
-// export const pagenation = () => <Pagination />;
 export const rollingPrice = () => <ExampleRollingPrice />;
 export const pagination = () => <ExamplePagination />;
