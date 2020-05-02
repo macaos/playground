@@ -1,126 +1,91 @@
-import React, { ReactElement, useState, useEffect, useRef } from "react";
+import React, { Component, ReactElement } from "react";
 import RollingText from "./RollingText";
 import { forEach } from "lodash";
 import { css } from "emotion";
 
-const RollingTexts = ({
-  size,
-  randomEffect,
-  letters
-}: {
+interface IProps {
   size: string;
   letters: string;
   randomEffect?: boolean;
-}) => {
-  const RollingTextList: ReactElement[] = [];
-  const [isCalcLeft, setCalcLeft] = useState(false);
-  // Guide : get letter spacing for text
-  const guideRefs: any[] = [
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null)
-  ];
+  restrict: string[];
+}
 
-  useEffect(() => {
-    setTimeout(() => {
-      setCalcLeft(true);
-    }, 2000);
-  }, []);
+class RollingTexts extends Component<IProps> {
+  private RollingTextList: ReactElement[] = [];
+  private GuideTextList: ReactElement[] = [];
+  private guideRefs: any[] = [];
+  private isCalcGuide: boolean = false;
 
-  forEach(letters, (item, i) => {
-    const ref = guideRefs[i];
-    const letterWidth = ref && ref.current ? ref.current.offsetWidth : 20;
-    RollingTextList.push(
-      <RollingText
-        size={size}
-        letterWidth={letterWidth}
-        letter={item}
-        randomEffect={randomEffect}
-      />
-    );
-  });
-
-  const GuideTextList: ReactElement[] = [];
-  for (let i = 0, len = letters.length; i < len; i++) {
-    const item = letters[i];
-    // guideRefs[i] = useRef(null);
-    GuideTextList.push(
-      <span
-        ref={guideRefs[i]}
-        className={css`
-          font-size: ${size};
-          font-family: "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-          font-weight: bold;
-        `}
-      >
-        {item}
-      </span>
-    );
+  componentDidMount() {
+    this.didUpdate();
   }
 
-  return (
-    <>
-      {isCalcLeft && RollingTextList}
-      <div>{GuideTextList}</div>
-    </>
-  );
-};
+  componentDidUpdate() {
+    this.didUpdate();
+  }
+
+  didUpdate() {
+    if (!this.isCalcGuide) {
+      setTimeout(() => {
+        this.makeRollingTextList();
+        this.isCalcGuide = true;
+        this.forceUpdate();
+        this.isCalcGuide = false;
+      });
+    }
+  }
+
+  makeRollingTextList() {
+    this.RollingTextList = [];
+    const { letters, size, randomEffect, restrict } = this.props;
+    forEach(letters, (item, i) => {
+      const ref = this.guideRefs[i];
+      const letterWidth = ref && ref ? ref.offsetWidth : 20;
+      this.RollingTextList.push(
+        <RollingText
+          restrict={restrict}
+          size={size}
+          letterWidth={letterWidth}
+          letter={item}
+          randomEffect={randomEffect}
+        />
+      );
+    });
+  }
+  makeGuideTextList() {
+    this.GuideTextList = [];
+    this.guideRefs = [];
+    const { letters, size } = this.props;
+    for (let i = 0, len = letters.length; i < len; i++) {
+      const item = letters[i];
+      this.GuideTextList.push(
+        <span
+          key={i}
+          ref={ref => {
+            this.guideRefs[i] = ref;
+          }}
+          className={css`
+            opacity: 0;
+            font-size: ${size};
+            font-family: "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            font-weight: bold;
+          `}
+        >
+          {item}
+        </span>
+      );
+    }
+  }
+
+  render() {
+    this.makeGuideTextList();
+    return (
+      <>
+        {this.isCalcGuide && this.RollingTextList}
+        {!this.isCalcGuide && this.GuideTextList}
+      </>
+    );
+  }
+}
 
 export default RollingTexts;
