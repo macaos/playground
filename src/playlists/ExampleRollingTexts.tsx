@@ -9,7 +9,7 @@ const ExampleRollingTexts = () => {
   return (
     <>
       <div>
-        <RollingTexts size="41px" price={dummyNum} />
+        <RollingTexts size="41px" letters={dummyNum} />
       </div>
       Test :{" "}
       <input

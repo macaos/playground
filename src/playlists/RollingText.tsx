@@ -5,10 +5,12 @@ import { shuffle as _shuffle } from "lodash";
 const RollingText = ({
   size,
   letter,
+  letterWidth,
   randomEffect
 }: {
   size: string;
   letter: string;
+  letterWidth: number;
   randomEffect?: boolean;
 }) => {
   const ref: any = useRef(null);
@@ -32,6 +34,7 @@ const RollingText = ({
         display: inline-block;
         font-weight: bold;
         font-size: ${size};
+        width: ${letterWidth}px;
         height: ${height}px;
         overflow: hidden;
       `}
@@ -177,5 +180,7 @@ const characters: string[] = [
   "]",
   "'/",
   "?",
-  "~"
+  "~",
+  "'",
+  "."
 ];
