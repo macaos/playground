@@ -1,21 +1,24 @@
 import React, { useRef, useState, useEffect } from "react";
 import { css } from "emotion";
-import { shuffle as _shuffle } from "lodash";
+import { shuffle as _shuffle, forEach, concat } from "lodash";
 
 const RollingText = ({
   size,
   letter,
   letterWidth,
-  randomEffect
+  randomEffect,
+  restrict
 }: {
   size: string;
   letter: string;
-  letterWidth: number;
+  restrict: string[];
+  letterWidth?: number;
   randomEffect?: boolean;
 }) => {
   const ref: any = useRef(null);
   const [height, setHeight] = useState(0);
   const [dummyDisplay, setDummyDisplay] = useState("block");
+  const cssWidth: string = letterWidth ? letterWidth + "px" : "auto";
 
   useEffect(() => {
     if (ref) {
@@ -28,13 +31,14 @@ const RollingText = ({
 
   return (
     <div
+      key={letter}
       className={css`
       label="dummydiv";
         font-family: "Helvetica Neue", Arial, "Noto Sans", sans-serif;
         display: inline-block;
         font-weight: bold;
         font-size: ${size};
-        width: ${letterWidth}px;
+        width: ${cssWidth};
         height: ${height}px;
         overflow: hidden;
       `}
@@ -47,6 +51,7 @@ const RollingText = ({
         size={size}
         str={letter}
         calcHeight={height}
+        restrict={restrict}
         randomEffect={randomEffect}
       />
     </div>
@@ -61,18 +66,20 @@ const CharacterList = ({
   size,
   str,
   calcHeight,
+  restrict,
   randomEffect
 }: {
   size: string;
   str: string;
   calcHeight: number;
+  restrict: string[];
   randomEffect?: boolean;
 }) => {
   // shuffle characters
-  const shuffle: string[] = _shuffle(characters);
+  const shuffle: string[] = _shuffle(getCharacters(restrict));
   const idx: number = shuffle.indexOf(str); // get string index
   const html = [];
-  for (let i = 0, len = characters.length - 1; i <= len; i++) {
+  for (let i = 0, len = shuffle.length - 1; i <= len; i++) {
     html.push(<div className={styleNum(size)}>{shuffle[i]}</div>);
   }
   return (
@@ -98,89 +105,91 @@ const styleNum = (display: string = "block") => {
 
 export default RollingText;
 
-const characters: string[] = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "0",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-  "!",
-  "@",
-  "#",
-  "$",
-  "%",
-  "^",
-  "&",
-  "*",
-  "(",
-  ")",
-  "_",
-  "+",
-  "-",
-  "{",
-  "}",
-  "[",
-  "]",
-  "'/",
-  "?",
-  "~",
-  "'",
-  "."
-];
+const getCharacters = (arr: string[]) => {
+  let r: string[] = [];
+  forEach(arr, (item, i) => {
+    r = concat(r, characters[item]);
+  });
+  return r;
+};
+const characters: any = {
+  upper: [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+  ],
+  lower: [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z"
+  ],
+  number: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+  special_often: ["?", "'", "."],
+  special_lazy: [
+    "!",
+    "@",
+    "#",
+    "$",
+    "%",
+    "^",
+    "&",
+    "*",
+    "(",
+    ")",
+    "_",
+    "+",
+    "-",
+    "{",
+    "}",
+    "[",
+    "]",
+    "'/",
+    "~"
+  ]
+};
